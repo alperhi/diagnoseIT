@@ -7,9 +7,9 @@ import org.diagnoseit.engine.session.ISessionCallback;
 import org.diagnoseit.rules.result.ProblemOccurrence;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.spec.research.open.xtrace.adapters.introscope.source.IntroscopeTraceConverter;
 import org.spec.research.open.xtrace.api.core.Trace;
-
-import creator.TraceCreator;
+import org.spec.research.open.xtrace.shared.TraceConverter;
 
 /**
  * Launcher for rules that analyze a single trace.
@@ -22,22 +22,22 @@ public class Launcher {
 	/**
 	 * Rules that should be executed.
 	 */
-	public static final String RULES_PACKAGE = "org.diagnoseit.rules.mobile.impl";
+	public static final String RULES_PACKAGE = "org.diagnoseit.rules.impl";
 
 	/**
 	 * Path to traces that should be analyzed.
 	 */
-	private static final String INTROSCOPE_FILE = "path to introscope trace file";
+	private static final String INTROSCOPE_FILE = "C:/Users/Alper Hi/Desktop/Universität/Bachelorarbeit/Traces_CA/CA_Trace_Problematic.xml";
 
 	private static final String DYNATRACE_FILE = "path to dynatrace trace file";
 
-	private static final String INSPECTIT_FILE = "path to inspectit trace file";
+	private static final String INSPECTIT_FILE = "";
 
 	private static final String KIEKER_FILE = "path to kieker file";
 
 	public static void main(String[] args) throws ClassNotFoundException {
-		TraceCreator creator = new TraceCreator();
-		Trace trace = creator.getTestTrace1();
+		TraceConverter converter = new IntroscopeTraceConverter();
+		Trace trace = converter.convertTraces(INTROSCOPE_FILE).get(0);
 		startLauncher(trace);
 	}
 
