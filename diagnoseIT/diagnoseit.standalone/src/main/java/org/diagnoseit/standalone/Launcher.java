@@ -7,9 +7,7 @@ import org.diagnoseit.engine.session.ISessionCallback;
 import org.diagnoseit.rules.result.ProblemOccurrence;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.spec.research.open.xtrace.adapters.introscope.source.IntroscopeTraceConverter;
 import org.spec.research.open.xtrace.api.core.Trace;
-import org.spec.research.open.xtrace.shared.TraceConverter;
 
 /**
  * Launcher for rules that analyze a single trace.
@@ -27,7 +25,7 @@ public class Launcher {
 	/**
 	 * Path to traces that should be analyzed.
 	 */
-	private static final String INTROSCOPE_FILE = "C:/Users/Alper Hi/Desktop/Universität/Bachelorarbeit/Traces_CA/CA_Trace_Problematic.xml";
+	private static final String INTROSCOPE_FILE = "C:/Users/Alper Hi/Desktop/Universitï¿½t/Bachelorarbeit/Traces_CA/CA_Trace_Problematic.xml";
 
 	private static final String DYNATRACE_FILE = "path to dynatrace trace file";
 
@@ -36,9 +34,7 @@ public class Launcher {
 	private static final String KIEKER_FILE = "path to kieker file";
 
 	public static void main(String[] args) throws ClassNotFoundException {
-		TraceConverter converter = new IntroscopeTraceConverter();
-		Trace trace = converter.convertTraces(INTROSCOPE_FILE).get(0);
-		startLauncher(trace);
+		startLauncher(new TraceCreatorForTesting().createTrace());
 	}
 
 	/**
