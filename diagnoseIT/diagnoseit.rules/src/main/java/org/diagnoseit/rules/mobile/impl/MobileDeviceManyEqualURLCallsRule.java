@@ -10,10 +10,8 @@ import org.diagnoseit.engine.rule.annotation.Rule;
 import org.diagnoseit.engine.rule.annotation.TagValue;
 import org.diagnoseit.engine.tag.Tags;
 import org.diagnoseit.rules.RuleConstants;
-import org.spec.research.open.xtrace.api.core.SubTrace;
 import org.spec.research.open.xtrace.api.core.Trace;
 import org.spec.research.open.xtrace.api.core.callables.Callable;
-import org.spec.research.open.xtrace.api.core.callables.HTTPRequestProcessing;
 import org.spec.research.open.xtrace.api.core.callables.RemoteInvocation;
 
 /**
@@ -42,59 +40,45 @@ public class MobileDeviceManyEqualURLCallsRule {
 
 		// log.info("===== MobileDeviceManyEqualURLCallsRule =====");
 
-		List<SubTrace> javaAgentSubTraces = new LinkedList<SubTrace>();
 		int amountOfCallables = 0;
+		List<RemoteInvocation> remoteInvocations = new LinkedList<RemoteInvocation>();
 
 		for (Callable callable : trace.getRoot()) {
 			amountOfCallables++;
 			if (callable instanceof RemoteInvocation) {
 				RemoteInvocation remoteInvo = (RemoteInvocation) callable;
-				if (remoteInvo.getTargetSubTrace().isPresent()) {
-					javaAgentSubTraces
-					.add(remoteInvo.getTargetSubTrace().get());
+				if (remoteInvo.getResponseMeasurement().isPresent() && remoteInvo.getResponseMeasurement().get().getUrl().isPresent()) {
+					remoteInvocations.add(remoteInvo);
 				}
 			}
 		}
-
-		if (javaAgentSubTraces.isEmpty()) {
+		if (remoteInvocations.isEmpty()) {
 			return false;
 		}
 
-		List<HTTPRequestProcessing> httpRequests = new LinkedList<HTTPRequestProcessing>();
+		HashMap<String, Long> remoteInvoMap = new HashMap<String, Long>();
 
-		for (SubTrace subtrace : javaAgentSubTraces) {
-			if (subtrace.getRoot() instanceof HTTPRequestProcessing) {
-				HTTPRequestProcessing currentRequest = (HTTPRequestProcessing) subtrace
-						.getRoot();
-				httpRequests.add(currentRequest);
-			}
-		}
+		for (RemoteInvocation remoteInvo : remoteInvocations) {
+			String url = remoteInvo.getResponseMeasurement().get().getUrl().get();
 
-		HashMap<String, Long> requestMap = new HashMap<String, Long>();
-
-		for (HTTPRequestProcessing httpRequest : httpRequests) {
-			String url = httpRequest.getUri();
-
-			if (requestMap.containsKey(url)) {
-				requestMap.put(url, requestMap.get(url) + 1);
+			if (remoteInvoMap.containsKey(url)) {
+				remoteInvoMap.put(url, remoteInvoMap.get(url) + 1);
 			} else {
 				long amount = 1;
-				requestMap.put(url, amount);
+				remoteInvoMap.put(url, amount);
 			}
 		}
 
-		boolean tooManyEqualHTTPRequests = false;
+		boolean tooManyEqualURLCalls = false;
 
-		for (long amountEqualHTTPRequest : requestMap.values()) {
-			if (amountEqualHTTPRequest > (amountOfCallables
-					* REMOTE_CALLS_PERCENT)) {
-				log.info("MobileDeviceManyEqualURLCallsRule: Mobile application executed too many equal URL calls. Amount = "
-						+ amountEqualHTTPRequest + ".");
+		for (long amountEqualURLCalls : remoteInvoMap.values()) {
+			if (amountEqualURLCalls > (amountOfCallables * REMOTE_CALLS_PERCENT)) {
+				log.info("MobileDeviceManyEqualURLCallsRule: Mobile application executed too many equal URL calls. Amount = " + amountEqualURLCalls + ".");
 				// return true;
-				tooManyEqualHTTPRequests = true;
+				tooManyEqualURLCalls = true;
 			}
 		}
 		// return false;
-		return tooManyEqualHTTPRequests;
+		return tooManyEqualURLCalls;
 	}
 }
