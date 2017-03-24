@@ -3,6 +3,7 @@ package org.diagnoseit.rules.mobile.impl;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.logging.Logger;
 
 import org.diagnoseit.engine.rule.annotation.Action;
 import org.diagnoseit.engine.rule.annotation.Rule;
@@ -17,12 +18,14 @@ import org.spec.research.open.xtrace.api.core.callables.RemoteInvocation;
 
 /**
  * Rule analyzes if the mobile device executed to many equal URL calls.
- * 
+ *
  * @author Alper Hi
  *
  */
 @Rule(name = "MobileDeviceManyEqualURLCallsRule")
 public class MobileDeviceManyEqualURLCallsRule {
+
+	private static final Logger log = Logger.getLogger(MobileDeviceManyEqualURLCallsRule.class.getName());
 
 	private static final double REMOTE_CALLS_PERCENT = 0.03;
 
@@ -31,13 +34,13 @@ public class MobileDeviceManyEqualURLCallsRule {
 
 	/**
 	 * Rule execution.
-	 * 
+	 *
 	 * @return
 	 */
 	@Action(resultTag = RuleConstants.TAG_MANY_EQUAL_URL_CALLS_MOBILE)
 	public boolean action() {
 
-		System.out.println("===== MobileDeviceManyEqualURLCallsRule =====");
+		// log.info("===== MobileDeviceManyEqualURLCallsRule =====");
 
 		List<SubTrace> javaAgentSubTraces = new LinkedList<SubTrace>();
 		int amountOfCallables = 0;
@@ -48,7 +51,7 @@ public class MobileDeviceManyEqualURLCallsRule {
 				RemoteInvocation remoteInvo = (RemoteInvocation) callable;
 				if (remoteInvo.getTargetSubTrace().isPresent()) {
 					javaAgentSubTraces
-							.add(remoteInvo.getTargetSubTrace().get());
+					.add(remoteInvo.getTargetSubTrace().get());
 				}
 			}
 		}
@@ -83,11 +86,10 @@ public class MobileDeviceManyEqualURLCallsRule {
 		boolean tooManyEqualHTTPRequests = false;
 
 		for (long amountEqualHTTPRequest : requestMap.values()) {
-			if (amountEqualHTTPRequest > amountOfCallables
-					* REMOTE_CALLS_PERCENT) {
-				System.out
-						.println("MobileDeviceManyEqualURLCallsRule: Mobile application executed too many equal URL calls. Amount = "
-								+ amountEqualHTTPRequest + ".");
+			if (amountEqualHTTPRequest > (amountOfCallables
+					* REMOTE_CALLS_PERCENT)) {
+				log.info("MobileDeviceManyEqualURLCallsRule: Mobile application executed too many equal URL calls. Amount = "
+						+ amountEqualHTTPRequest + ".");
 				// return true;
 				tooManyEqualHTTPRequests = true;
 			}

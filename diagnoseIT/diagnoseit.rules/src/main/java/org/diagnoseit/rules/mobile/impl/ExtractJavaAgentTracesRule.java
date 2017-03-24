@@ -36,9 +36,9 @@ public class ExtractJavaAgentTracesRule {
 		for (Callable callable : trace.getRoot()) {
 			if (callable instanceof RemoteInvocation) {
 				RemoteInvocation remoteInvo = (RemoteInvocation) callable;
-				if (remoteInvo.getTargetSubTrace().get() != null) {
+				if (remoteInvo.getTargetSubTrace().isPresent()) {
 					javaAgentSubTraces
-							.add(remoteInvo.getTargetSubTrace().get());
+					.add(remoteInvo.getTargetSubTrace().get());
 				}
 			}
 		}

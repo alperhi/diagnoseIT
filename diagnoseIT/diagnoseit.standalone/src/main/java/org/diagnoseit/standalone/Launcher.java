@@ -13,11 +13,13 @@ import creator.TraceCreator;
 
 /**
  * Launcher for rules that analyze a single trace.
- * 
+ *
  * @author Alper Hi
  *
  */
 public class Launcher {
+
+	private static final Logger log = LoggerFactory.getLogger(Launcher.class);
 
 	/**
 	 * Rules that should be executed.
@@ -41,7 +43,7 @@ public class Launcher {
 	/**
 	 * Path to traces that should be analyzed.
 	 */
-	private static final String INTROSCOPE_FILE = "C:/Users/Alper Hi/Desktop/Universität/Bachelorarbeit/Traces_CA/CA_Trace1.xml";
+	private static final String INTROSCOPE_FILE = "C:/Users/Alper Hi/Desktop/Universitï¿½t/Bachelorarbeit/Traces_CA/CA_Trace1.xml";
 
 	private static final String DYNATRACE_FILE = "path to dynatrace trace file";
 
@@ -50,11 +52,11 @@ public class Launcher {
 	private static final String KIEKER_FILE = "path to kieker file";
 
 	public static void main(String[] args) throws ClassNotFoundException {
-		
+
 		Trace trace = TraceCreator.getTestTrace(true, 100, 3);
 		System.out.println(trace.getRoot());
 		startLauncher(trace);
-		
+
 		// IntroscopeTraceConverter itc = new IntroscopeTraceConverter();
 		// List<Trace> traces = itc.convertTraces(INTROSCOPE_FILE);
 		// System.out.println(traces.get(0));
@@ -85,7 +87,8 @@ public class Launcher {
 	}
 
 	private static class ResultHandler implements
-			ISessionCallback<List<ProblemOccurrence>> {
+	ISessionCallback<List<ProblemOccurrence>>
+	{
 		/** The logger of this class. */
 		private static final Logger log = LoggerFactory
 				.getLogger(Launcher.class);

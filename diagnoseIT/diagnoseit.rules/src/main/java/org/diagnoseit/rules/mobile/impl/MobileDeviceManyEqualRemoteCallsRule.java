@@ -3,6 +3,7 @@ package org.diagnoseit.rules.mobile.impl;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.logging.Logger;
 
 import org.diagnoseit.engine.rule.annotation.Action;
 import org.diagnoseit.engine.rule.annotation.Rule;
@@ -16,12 +17,14 @@ import org.spec.research.open.xtrace.api.core.callables.RemoteInvocation;
 /**
  * Rule analyzes if the mobile device executed to many remote calls to the same
  * backend.
- * 
+ *
  * @author Alper Hi
  *
  */
 @Rule(name = "MobileDeviceManyEqualRemoteCallsRule")
 public class MobileDeviceManyEqualRemoteCallsRule {
+
+	private static final Logger log = Logger.getLogger(MobileDeviceManyEqualRemoteCallsRule.class.getName());
 
 	private static final double REMOTE_CALLS_PERCENT = 0.03;
 
@@ -30,13 +33,13 @@ public class MobileDeviceManyEqualRemoteCallsRule {
 
 	/**
 	 * Rule execution.
-	 * 
+	 *
 	 * @return
 	 */
 	@Action(resultTag = RuleConstants.TAG_MANY_EQUAL_REMOTE_INVOCATIONS_MOBILE)
 	public boolean action() {
 
-		System.out.println("===== MobileDeviceManyEqualRemoteCallsRule =====");
+		// log.info("===== MobileDeviceManyEqualRemoteCallsRule =====");
 
 		int amountOfCallables = 0;
 		List<RemoteInvocation> remoteInvocations = new LinkedList<RemoteInvocation>();
@@ -53,13 +56,13 @@ public class MobileDeviceManyEqualRemoteCallsRule {
 		}
 
 		/**
-		 * getTarget gibt zurück: Host, RuntimeEnvironment, Application,
+		 * getTarget gibt zurï¿½ck: Host, RuntimeEnvironment, Application,
 		 * BusinessTransaction. Ist das selbe wie:
 		 * targetSubTrace.getLocation().toString() getTarget().equal(....)
 		 * vergleicht die vier Parameter von Location. Wenn die 4 Parameter von
 		 * einer RemoteInvocation mit den 4 Parametern von einer anderen
-		 * RemoteInvocation übereinstimmen, dann war der RemoteCall in beiden
-		 * Fällen sozusagen der selbe (Anti-Pattern ?) -->
+		 * RemoteInvocation ï¿½bereinstimmen, dann war der RemoteCall in beiden
+		 * Fï¿½llen sozusagen der selbe (Anti-Pattern ?) -->
 		 * remoteInvo.getTarget()
 		 */
 
@@ -80,11 +83,10 @@ public class MobileDeviceManyEqualRemoteCallsRule {
 		boolean tooManyEqualRemoteCalls = false;
 
 		for (long amountEqualRemoteInvos : remoteInvoMap.values()) {
-			if (amountEqualRemoteInvos > amountOfCallables
-					* REMOTE_CALLS_PERCENT) {
-				System.out
-						.println("MobileDeviceManyEqualRemoteCallsRule: Mobile application executed too many equal remote calls. Amount = "
-								+ amountEqualRemoteInvos + ".");
+			if (amountEqualRemoteInvos > (amountOfCallables
+					* REMOTE_CALLS_PERCENT)) {
+				log.info("MobileDeviceManyEqualRemoteCallsRule: Mobile application executed too many equal remote calls. Amount = "
+						+ amountEqualRemoteInvos + ".");
 				// return true;
 				tooManyEqualRemoteCalls = true;
 			}
