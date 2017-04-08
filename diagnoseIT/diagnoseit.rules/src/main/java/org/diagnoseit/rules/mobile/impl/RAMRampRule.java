@@ -27,7 +27,7 @@ public class RAMRampRule {
 	 */
 	private static final double SLOPE_THRESHOLD = AntiPatternConfig.getInstance().getPropertyDouble("RAM_RAMP_RULE_SLOPE_THRESHOLD");
 
-	private static final Logger log = LoggerInitializer.getLogger(HardDiscRampRule.class.getName());
+	private static final Logger log = LoggerInitializer.getLogger(RAMRampRule.class.getName());
 
 	@TagValue(type = Tags.ROOT_TAG)
 	private Trace trace;
