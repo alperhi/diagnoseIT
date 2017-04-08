@@ -46,7 +46,7 @@ public class MobileDeviceManyEqualURLCallsRule {
 
 		NestingCallable rootCallable = (NestingCallable) trace.getRoot().getRoot();
 
-		long useCaseDuration = rootCallable.getResponseTime() / 1000;
+		double useCaseDuration = rootCallable.getResponseTime() / 1000000000.0;
 
 		if (remoteInvocations.isEmpty() || (remoteInvocations.size() < (DURATION_PERCENT * useCaseDuration))) {
 			return false;

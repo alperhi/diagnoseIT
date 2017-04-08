@@ -48,7 +48,7 @@ public class BackendManyEqualRemoteCallsRule {
 
 		List<RemoteInvocation> remoteInvocations = new LinkedList<RemoteInvocation>();
 
-		long completeDurationOfSubtraces = 0;
+		double completeDurationOfSubtraces = 0;
 
 		for (SubTrace subTrace : javaAgentSubTraces) {
 			completeDurationOfSubtraces += subTrace.getResponseTime();
@@ -60,7 +60,7 @@ public class BackendManyEqualRemoteCallsRule {
 			}
 		}
 
-		completeDurationOfSubtraces /= 1000;
+		completeDurationOfSubtraces /= 1000000000.0;
 
 		if (remoteInvocations.isEmpty() || (remoteInvocations.size() < (DURATION_PERCENT * completeDurationOfSubtraces))) {
 			return false;

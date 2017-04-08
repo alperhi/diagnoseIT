@@ -48,7 +48,7 @@ public class BackendManyEqualURLCallsRule {
 		}
 
 		List<SubTrace> remoteSubtraces = new LinkedList<SubTrace>();
-		long completeDurationOfSubtraces = 0;
+		double completeDurationOfSubtraces = 0;
 
 		for (SubTrace subTrace : javaAgentSubTraces) {
 
@@ -64,7 +64,7 @@ public class BackendManyEqualURLCallsRule {
 			}
 		}
 
-		completeDurationOfSubtraces /= 1000;
+		completeDurationOfSubtraces /= 1000000000.0;
 
 		if (remoteSubtraces.isEmpty() || (remoteSubtraces.size() < (DURATION_PERCENT * completeDurationOfSubtraces))) {
 			return false;

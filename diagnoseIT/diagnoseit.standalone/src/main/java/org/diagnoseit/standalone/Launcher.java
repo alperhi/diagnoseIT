@@ -103,8 +103,11 @@ public class Launcher {
 	 */
 	public static void startLauncher(Trace trace, RulePackage rulePackage) {
 
-		log.info("----- diagnoseIT starts -----");
-		log.info("TraceID: " + trace.getTraceId());
+		String output = "######################################################################\n" + "######################################################################\n"
+				+ "########## diagnoseIT starts (TraceID: ) ##########\n" + "######################################################################\n"
+				+ "######################################################################";
+
+		log.info(output);
 
 		loadConfigFile();
 
