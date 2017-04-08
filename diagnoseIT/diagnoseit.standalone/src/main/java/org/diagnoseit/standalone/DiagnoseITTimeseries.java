@@ -14,7 +14,6 @@ import org.diagnoseit.engine.DiagnosisEngineConfiguration;
 import org.diagnoseit.engine.IDiagnosisEngine;
 import org.diagnoseit.engine.rule.annotation.Rule;
 import org.diagnoseit.engine.session.ISessionCallback;
-import org.diagnoseit.rules.mobile.timeseries.impl.InfluxDBConnectorMobile;
 import org.diagnoseit.rules.result.ProblemInstanceResultCollector;
 import org.diagnoseit.rules.result.ProblemOccurrence;
 import org.diagnoseit.rules.timeseries.impl.InfluxDBConnector;
@@ -41,14 +40,14 @@ public class DiagnoseITTimeseries implements Runnable {
 
 	private final List<String> rulesPackages;
 
-	private IDiagnosisEngine<InfluxDBConnectorMobile> engine;
+	private IDiagnosisEngine<InfluxDBConnector> engine;
 
 	public DiagnoseITTimeseries(List<String> rulesPackages) {
 		this.rulesPackages = rulesPackages;
 	}
 
 	// influx
-	public boolean diagnose(InfluxDBConnectorMobile connector) {
+	public boolean diagnose(InfluxDBConnector connector) {
 		try {
 			// influx
 			return queue.offer(new DiagnosisInput(connector), TIMEOUT,
@@ -58,19 +57,19 @@ public class DiagnoseITTimeseries implements Runnable {
 		}
 	}
 
-//	public int diagnose(Collection<Pair<Trace, Long>> traceBaselinePairs) {
-//		int count = 0;
-//		for (Pair<Trace, Long> invocationBaselinePair : traceBaselinePairs) {
-//			boolean successfullySubmitted = diagnose(
-//					invocationBaselinePair.getLeft(),
-//					invocationBaselinePair.getRight());
-//			if (!successfullySubmitted) {
-//				break;
-//			}
-//			count++;
-//		}
-//		return count;
-//	}
+	//	public int diagnose(Collection<Pair<Trace, Long>> traceBaselinePairs) {
+	//		int count = 0;
+	//		for (Pair<Trace, Long> invocationBaselinePair : traceBaselinePairs) {
+	//			boolean successfullySubmitted = diagnose(
+	//					invocationBaselinePair.getLeft(),
+	//					invocationBaselinePair.getRight());
+	//			if (!successfullySubmitted) {
+	//				break;
+	//			}
+	//			count++;
+	//		}
+	//		return count;
+	//	}
 
 	/**
 	 * {@inheritDoc}
@@ -103,11 +102,11 @@ public class DiagnoseITTimeseries implements Runnable {
 			}
 		}
 
-		DiagnosisEngineConfiguration<InfluxDBConnectorMobile, List<ProblemOccurrence>> configuration = new DiagnosisEngineConfiguration<InfluxDBConnectorMobile, List<ProblemOccurrence>>();
+		DiagnosisEngineConfiguration<InfluxDBConnector, List<ProblemOccurrence>> configuration = new DiagnosisEngineConfiguration<InfluxDBConnector, List<ProblemOccurrence>>();
 
 		configuration.setNumSessionWorkers(2);
 		configuration.setRuleClasses(ruleClasses);
-		configuration.setResultCollector(new ProblemInstanceResultCollector<InfluxDBConnectorMobile>());
+		configuration.setResultCollector(new ProblemInstanceResultCollector<InfluxDBConnector>());
 		configuration.setSessionCallback(resultHandler);
 
 		engine = new DiagnosisEngine<>(configuration);
@@ -118,20 +117,20 @@ public class DiagnoseITTimeseries implements Runnable {
 	}
 
 	private static class DiagnosisInput {
-		private final InfluxDBConnectorMobile connector;
+		private final InfluxDBConnector connector;
 
 		/**
 		 * @param invocation
 		 * @param baseline
 		 */
-		public DiagnosisInput(InfluxDBConnectorMobile connector) {
+		public DiagnosisInput(InfluxDBConnector connector) {
 			this.connector = connector;
 		}
 		/**
-		 * 
+		 *
 		 * @return
 		 */
-		public InfluxDBConnectorMobile getConnector() {
+		public InfluxDBConnector getConnector() {
 			return connector;
 		}
 

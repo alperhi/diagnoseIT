@@ -8,10 +8,8 @@ import java.util.logging.Logger;
 import org.diagnoseit.engine.rule.annotation.Action;
 import org.diagnoseit.engine.rule.annotation.Rule;
 import org.diagnoseit.engine.rule.annotation.TagValue;
-import org.diagnoseit.engine.tag.Tags;
 import org.diagnoseit.rules.RuleConstants;
 import org.spec.research.open.xtrace.api.core.SubTrace;
-import org.spec.research.open.xtrace.api.core.Trace;
 import org.spec.research.open.xtrace.api.core.callables.Callable;
 import org.spec.research.open.xtrace.api.core.callables.HTTPRequestProcessing;
 import org.spec.research.open.xtrace.api.core.callables.RemoteInvocation;
@@ -25,44 +23,38 @@ import org.spec.research.open.xtrace.api.core.callables.RemoteInvocation;
 @Rule(name = "BackendManyEqualURLCallsRule")
 public class BackendManyEqualURLCallsRule {
 
-	private static final Logger log = Logger.getLogger(BackendManyEqualURLCallsRule.class.getName());
+	private static final Logger log = LoggerInitializer.getLogger(BackendManyEqualURLCallsRule.class.getName());
 
-	private static final double URL_CALLS_PERCENT = 0.03;
+	private static final double URL_CALLS_PERCENT = AntiPatternConfig.getInstance().getPropertyDouble("BACKEND_MANY_EQUAL_URL_CALLS_RULE_URL_CALLS_PERCENT");
 
-	@TagValue(type = Tags.ROOT_TAG)
-	private Trace trace;
+	private static final double DURATION_PERCENT = AntiPatternConfig.getInstance().getPropertyDouble("BACKEND_MANY_EQUAL_URL_CALLS_RULE_DURATION_PERCENT");
+
+	private static final int MIN_AMOUNT_OF_CALLS = AntiPatternConfig.getInstance().getPropertyInt("BACKEND_MANY_EQUAL_URL_CALLS_RULE_MIN_AMOUNT_OF_CALLS");
+
+	@TagValue(type = RuleConstants.TAG_JAVA_AGENT_SUBTRACES)
+	private List<SubTrace> javaAgentSubTraces;
 
 	/**
 	 * Rule execution.
 	 *
 	 * @return
 	 */
-	@Action(resultTag = RuleConstants.TAG_MANY_EQUAL_REMOTE_INVOCATIONS_BACKEND)
+	@Action(resultTag = RuleConstants.TAG_MANY_EQUAL_URL_CALLS_BACKEND)
 	public boolean action() {
 
-		// log.info("===== BackendManyEqualURLCallsRule =====");
-
-		List<SubTrace> javaAgentSubTraces = new LinkedList<SubTrace>();
-
-		for (Callable callable : trace.getRoot()) {
-			if (callable instanceof RemoteInvocation) {
-				RemoteInvocation remoteInvo = (RemoteInvocation) callable;
-				if (remoteInvo.getTargetSubTrace().isPresent()) {
-					javaAgentSubTraces.add(remoteInvo.getTargetSubTrace().get());
-				}
-			}
-		}
 
 		if (javaAgentSubTraces.isEmpty()) {
 			return false;
 		}
 
 		List<SubTrace> remoteSubtraces = new LinkedList<SubTrace>();
-		int amountOfCallables = 0;
+		long completeDurationOfSubtraces = 0;
 
 		for (SubTrace subTrace : javaAgentSubTraces) {
+
+			completeDurationOfSubtraces += subTrace.getResponseTime();
+
 			for (Callable callable : subTrace) {
-				amountOfCallables++;
 				if (callable instanceof RemoteInvocation) {
 					RemoteInvocation remoteInvo = (RemoteInvocation) callable;
 					if (remoteInvo.getTargetSubTrace().isPresent()) {
@@ -72,7 +64,9 @@ public class BackendManyEqualURLCallsRule {
 			}
 		}
 
-		if (remoteSubtraces.isEmpty()) {
+		completeDurationOfSubtraces /= 1000;
+
+		if (remoteSubtraces.isEmpty() || (remoteSubtraces.size() < (DURATION_PERCENT * completeDurationOfSubtraces))) {
 			return false;
 		}
 
@@ -84,7 +78,6 @@ public class BackendManyEqualURLCallsRule {
 				httpRequests.add(httpInvo);
 			}
 		}
-
 
 		if (httpRequests.isEmpty()) {
 			return false;
@@ -105,9 +98,9 @@ public class BackendManyEqualURLCallsRule {
 
 		boolean tooManyEqualURLCalls = false;
 
-		for (long amountEqualURLInvos : remoteInvoMap.values()) {
-			if (amountEqualURLInvos > (amountOfCallables * URL_CALLS_PERCENT)) {
-				log.info("BackendManyEqualURLCallsRule: Java application executed too many equal URL calls. Amount = " + amountEqualURLInvos + ".");
+		for (long amountEqualURLCalls : remoteInvoMap.values()) {
+			if ((amountEqualURLCalls >= MIN_AMOUNT_OF_CALLS) && (amountEqualURLCalls > (remoteSubtraces.size() * URL_CALLS_PERCENT))) {
+				log.info("Java application executed too many equal URL calls. Amount = " + amountEqualURLCalls + ".");
 				tooManyEqualURLCalls = true;
 			}
 		}

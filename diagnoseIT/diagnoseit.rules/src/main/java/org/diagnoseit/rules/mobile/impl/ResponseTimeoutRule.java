@@ -22,7 +22,7 @@ import org.spec.research.open.xtrace.api.core.callables.RemoteInvocation;
 @Rule(name = "ResponseTimeoutRule")
 public class ResponseTimeoutRule {
 
-	private static final Logger log = Logger.getLogger(ResponseTimeoutRule.class.getName());
+	private static final Logger log = LoggerInitializer.getLogger(ResponseTimeoutRule.class.getName());
 
 	@TagValue(type = Tags.ROOT_TAG)
 	private Trace trace;
@@ -46,10 +46,10 @@ public class ResponseTimeoutRule {
 					boolean isTimeout = mobileRemoteMeasurement.getTimeout()
 							.get();
 					if (isTimeout && remoteInvo.getTargetSubTrace().isPresent()) {
-						log.info("ResponseTimeoutRule: Timeout on mobile client and the response came too late.");
+						log.info("Timeout on mobile client and the response came too late.");
 						return true;
 					} else if (isTimeout) {
-						log.info("ResponseTimeoutRule: Timeout on mobile client and no response.");
+						log.info("Timeout on mobile client and no response.");
 					}
 				}
 			}

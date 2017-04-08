@@ -8,10 +8,8 @@ import java.util.logging.Logger;
 import org.diagnoseit.engine.rule.annotation.Action;
 import org.diagnoseit.engine.rule.annotation.Rule;
 import org.diagnoseit.engine.rule.annotation.TagValue;
-import org.diagnoseit.engine.tag.Tags;
 import org.diagnoseit.rules.RuleConstants;
 import org.spec.research.open.xtrace.api.core.SubTrace;
-import org.spec.research.open.xtrace.api.core.Trace;
 import org.spec.research.open.xtrace.api.core.callables.Callable;
 import org.spec.research.open.xtrace.api.core.callables.RemoteInvocation;
 
@@ -25,12 +23,16 @@ import org.spec.research.open.xtrace.api.core.callables.RemoteInvocation;
 @Rule(name = "BackendManyEqualRemoteCallsRule")
 public class BackendManyEqualRemoteCallsRule {
 
-	private static final Logger log = Logger.getLogger(BackendManyEqualRemoteCallsRule.class.getName());
+	private static final Logger log = LoggerInitializer.getLogger(BackendManyEqualRemoteCallsRule.class.getName());
 
-	private static final double REMOTE_CALLS_PERCENT = 0.03;
+	private static final double REMOTE_CALLS_PERCENT = AntiPatternConfig.getInstance().getPropertyDouble("BACKEND_MANY_EQUAL_REMOTE_CALLS_RULE_REMOTE_CALLS_PERCENT");
 
-	@TagValue(type = Tags.ROOT_TAG)
-	private Trace trace;
+	private static final double DURATION_PERCENT = AntiPatternConfig.getInstance().getPropertyDouble("BACKEND_MANY_EQUAL_REMOTE_CALLS_RULE_DURATION_PERCENT");
+
+	private static final int MIN_AMOUNT_OF_CALLS = AntiPatternConfig.getInstance().getPropertyInt("BACKEND_MANY_EQUAL_REMOTE_CALLS_RULE_MIN_AMOUNT_OF_CALLS");
+
+	@TagValue(type = RuleConstants.TAG_JAVA_AGENT_SUBTRACES)
+	private List<SubTrace> javaAgentSubTraces;
 
 	/**
 	 * Rule execution.
@@ -40,29 +42,17 @@ public class BackendManyEqualRemoteCallsRule {
 	@Action(resultTag = RuleConstants.TAG_MANY_EQUAL_REMOTE_INVOCATIONS_BACKEND)
 	public boolean action() {
 
-		// log.info("===== BackendManyEqualRemoteCallsRule =====");
-
-		List<SubTrace> javaAgentSubTraces = new LinkedList<SubTrace>();
-
-		for (Callable callable : trace.getRoot()) {
-			if (callable instanceof RemoteInvocation) {
-				RemoteInvocation remoteInvo = (RemoteInvocation) callable;
-				if (remoteInvo.getTargetSubTrace().isPresent()) {
-					javaAgentSubTraces.add(remoteInvo.getTargetSubTrace().get());
-				}
-			}
-		}
-
 		if (javaAgentSubTraces.isEmpty()) {
 			return false;
 		}
 
-		int amountOfCallables = 0;
 		List<RemoteInvocation> remoteInvocations = new LinkedList<RemoteInvocation>();
 
+		long completeDurationOfSubtraces = 0;
+
 		for (SubTrace subTrace : javaAgentSubTraces) {
+			completeDurationOfSubtraces += subTrace.getResponseTime();
 			for (Callable callable : subTrace) {
-				amountOfCallables++;
 				if (callable instanceof RemoteInvocation) {
 					RemoteInvocation remoteInvo = (RemoteInvocation) callable;
 					remoteInvocations.add(remoteInvo);
@@ -70,17 +60,12 @@ public class BackendManyEqualRemoteCallsRule {
 			}
 		}
 
-		if (remoteInvocations.isEmpty()) {
+		completeDurationOfSubtraces /= 1000;
+
+		if (remoteInvocations.isEmpty() || (remoteInvocations.size() < (DURATION_PERCENT * completeDurationOfSubtraces))) {
 			return false;
 		}
 
-		/**
-		 * getTarget gibt zur�ck: Host, RuntimeEnvironment, Application, BusinessTransaction. Ist
-		 * das selbe wie: targetSubTrace.getLocation().toString() getTarget().equal(....) vergleicht
-		 * die vier Parameter von Location. Wenn die 4 Parameter von einer RemoteInvocation mit den
-		 * 4 Parametern von einer anderen RemoteInvocation �bereinstimmen, dann war der RemoteCall
-		 * in beiden F�llen sozusagen der selbe (Anti-Pattern ?) --> remoteInvo.getTarget()
-		 */
 
 		HashMap<String, Long> remoteInvoMap = new HashMap<String, Long>();
 
@@ -98,8 +83,8 @@ public class BackendManyEqualRemoteCallsRule {
 		boolean tooManyEqualRemoteCalls = false;
 
 		for (long amountEqualRemoteInvos : remoteInvoMap.values()) {
-			if (amountEqualRemoteInvos > (amountOfCallables * REMOTE_CALLS_PERCENT)) {
-				log.info("BackendManyEqualRemoteCallsRule: Java application executed too many equal remote calls. Amount = " + amountEqualRemoteInvos + ".");
+			if ((amountEqualRemoteInvos >= MIN_AMOUNT_OF_CALLS) && (amountEqualRemoteInvos > (remoteInvocations.size() * REMOTE_CALLS_PERCENT))) {
+				log.info("Java application executed too many equal remote calls. Amount = " + amountEqualRemoteInvos + ".");
 				tooManyEqualRemoteCalls = true;
 			}
 		}

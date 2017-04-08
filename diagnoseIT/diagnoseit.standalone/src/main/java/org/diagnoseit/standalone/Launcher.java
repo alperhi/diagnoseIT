@@ -1,12 +1,18 @@
 package org.diagnoseit.standalone;
 
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
+import java.util.Properties;
+import java.util.logging.Logger;
 
 import org.diagnoseit.engine.session.ISessionCallback;
+import org.diagnoseit.rules.mobile.impl.AntiPatternConfig;
+import org.diagnoseit.rules.mobile.impl.LoggerInitializer;
 import org.diagnoseit.rules.result.ProblemOccurrence;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.spec.research.open.xtrace.api.core.Trace;
 
 import creator.TraceCreator;
@@ -19,14 +25,13 @@ import creator.TraceCreator;
  */
 public class Launcher {
 
-	private static final Logger log = LoggerFactory.getLogger(Launcher.class);
+	private static final Logger log = LoggerInitializer.getLogger(Launcher.class.getName());
 
 	/**
 	 * Rules that should be executed.
 	 */
 	public enum RulePackage {
-		DefaultPackage("org.diagnoseit.rules.impl"),
-		MobilePackage("org.diagnoseit.rules.mobile.impl");
+		DefaultPackage("org.diagnoseit.rules.impl"), MobilePackage("org.diagnoseit.rules.mobile.impl");
 
 		private String packageName;
 
@@ -40,34 +45,55 @@ public class Launcher {
 
 	};
 
-	/**
-	 * Path to traces that should be analyzed.
-	 */
-	private static final String INTROSCOPE_FILE = "C:/Users/Alper Hi/Desktop/Universit�t/Bachelorarbeit/Traces_CA/CA_Trace1.xml";
-
-	private static final String DYNATRACE_FILE = "path to dynatrace trace file";
-
-	private static final String INSPECTIT_FILE = "path to inspectit trace file";
-
-	private static final String KIEKER_FILE = "path to kieker file";
-
 	public static void main(String[] args) throws ClassNotFoundException {
 
 		Trace trace = TraceCreator.getTestTrace(true, 100, 3);
-		System.out.println(trace.getRoot());
 		startLauncher(trace);
 
-		// IntroscopeTraceConverter itc = new IntroscopeTraceConverter();
-		// List<Trace> traces = itc.convertTraces(INTROSCOPE_FILE);
-		// System.out.println(traces.get(0));
-		// startLauncher(traces.get(0));
+	}
+
+	private static boolean loadConfigFile(String filename) {
+
+		if (!new File(filename).exists()) {
+			return false;
+		}
+		Properties properties = new Properties();
+		try {
+			BufferedInputStream stream = new BufferedInputStream(new FileInputStream(filename));
+			properties.load(stream);
+			stream.close();
+
+			AntiPatternConfig.getInstance().setProperties(properties);
+			return true;
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return false;
+	}
+
+	private static void loadConfigFile(){
+		boolean configFound = false;
+
+		configFound = loadConfigFile("C:/diagnoseIT/AntiPattern.properties");
+		if (configFound) {
+			return;
+		}
+
+		configFound = loadConfigFile("/etc/diagnoseIT/AntiPattern.properties");
+		if (configFound) {
+			return;
+		}
+
+		File file = new File("src/main/resources/AntiPattern.properties");
+		String path = file.getAbsolutePath();
+		configFound = loadConfigFile(path);
 	}
 
 	/**
 	 * @param trace
 	 * @throws ClassNotFoundException
 	 */
-	public static void startLauncher(Trace trace) throws ClassNotFoundException {
+	public static void startLauncher(Trace trace) {
 		startLauncher(trace, RulePackage.MobilePackage);
 	}
 
@@ -75,30 +101,37 @@ public class Launcher {
 	 * @param trace
 	 * @throws ClassNotFoundException
 	 */
-	public static void startLauncher(Trace trace, RulePackage rulePackage)
-			throws ClassNotFoundException {
-		DiagnoseIT diagnoseIT = new DiagnoseIT(
-				Collections.singletonList(rulePackage.getPackageName()));
-		diagnoseIT.init(new ResultHandler());
+	public static void startLauncher(Trace trace, RulePackage rulePackage) {
 
-		long baseline = 1000L;
+		log.info("----- diagnoseIT starts -----");
+		log.info("TraceID: " + trace.getTraceId());
 
-		diagnoseIT.diagnose(trace, baseline);
+		loadConfigFile();
+
+		DiagnoseIT diagnoseIT = new DiagnoseIT(Collections.singletonList(rulePackage.getPackageName()));
+
+		try {
+			diagnoseIT.init(new ResultHandler());
+
+			long baseline = 1000L;
+
+			diagnoseIT.diagnose(trace, baseline);
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
-	private static class ResultHandler implements
-	ISessionCallback<List<ProblemOccurrence>>
-	{
+	private static class ResultHandler implements ISessionCallback<List<ProblemOccurrence>> {
 		/** The logger of this class. */
-		private static final Logger log = LoggerFactory
-				.getLogger(Launcher.class);
+		private static final Logger log = LoggerInitializer.getLogger(Launcher.class.getName());
 
 		/**
 		 * {@inheritDoc}
 		 */
 		@Override
 		public void onSuccess(List<ProblemOccurrence> result) {
-			System.out.println("Success!!");
+			log.info("Successfully conducted diagnosis!");
 			// TODO: Do Something with diagnosis result
 		}
 
@@ -107,7 +140,7 @@ public class Launcher {
 		 */
 		@Override
 		public void onFailure(Throwable t) {
-			log.warn("Failed conducting diagnosis!", t);
+			log.info("Failed conducting diagnosis! Message: " + t.getMessage());
 		}
 	}
 

@@ -19,7 +19,9 @@ import org.spec.research.open.xtrace.api.core.callables.RemoteInvocation;
 @Rule(name = "FailedBackendCommunicationRule")
 public class FailedBackendCommunicationRule {
 
-	private static final Logger log = Logger.getLogger(FailedBackendCommunicationRule.class.getName());
+	private static final Logger log = LoggerInitializer.getLogger(FailedBackendCommunicationRule.class.getName());
+
+	private static final String NO_CONNECTION = "no connection";
 
 	@TagValue(type = RuleConstants.TAG_REMOTE_INVOCATION)
 	private RemoteInvocation remoteInvocation;
@@ -31,24 +33,6 @@ public class FailedBackendCommunicationRule {
 	 */
 	@Action(resultTag = RuleConstants.TAG_FAILED_BACKEND_COMMUNICATION)
 	public boolean action() {
-
-		// log.info("===== FailedBackendCommunicationRule =====");
-
-		// for (Callable callable : trace.getRoot()) {
-		// if (callable instanceof RemoteInvocation) {
-		// RemoteInvocation current = (RemoteInvocation) callable;
-		// if (current.getTargetSubTrace().isPresent()) {
-		// SubTrace targetSubTrace = current.getTargetSubTrace().get();
-		// Callable rootOfSubTrace = targetSubTrace.getRoot();
-		// if (rootOfSubTrace instanceof HTTPRequestProcessing) {
-		// HTTPRequestProcessing hrp = (HTTPRequestProcessing) rootOfSubTrace;
-		// if (hrp.getResponseCode().isPresent()) {
-		// long responseCode = hrp.getResponseCode().get();
-		// }
-		// }
-		// }
-		// }
-		// }
 
 		if (!remoteInvocation.getRequestMeasurement().isPresent()) {
 			return false;
@@ -62,8 +46,14 @@ public class FailedBackendCommunicationRule {
 
 		String networkConnection = mobileRemMeasurement.getNetworkConnection().get();
 
-		if (networkConnection.equals("unknown")) {
-			log.info("FailedBackendCommunicationRule: Due to missing network connection the communication with the backend failed.");
+		if (networkConnection.equalsIgnoreCase(NO_CONNECTION)) {
+
+			if (remoteInvocation.getIdentifier().isPresent()) {
+				log.info("Due to missing network connection the communication with the backend failed. The identifier of the remote invocation is: "
+						+ remoteInvocation.getIdentifier().get());
+			} else {
+				log.info("Due to missing network connection the communication with the backend failed. The identifier of the remote invocation is unknown");
+			}
 			return true;
 		}
 		return false;

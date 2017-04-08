@@ -13,9 +13,9 @@ import org.spec.research.open.xtrace.api.core.Trace;
 import org.spec.research.open.xtrace.api.core.callables.Callable;
 import org.spec.research.open.xtrace.api.core.callables.RemoteInvocation;
 
-/**
- * Rule extracts Java agent subtraces from mobile trace.
- * @author Alper Hi
+/***Rule extracts Java agent subtraces from mobile trace.*
+
+@author Alper Hi
  *
  */
 @Rule(name = "ExtractJavaAgentTracesRule")
@@ -28,7 +28,8 @@ public class ExtractJavaAgentTracesRule {
 	 * Execution of the rule. Possibly returns more than one Java agent subtrace.
 	 * @return
 	 */
-	@Action(resultTag = RuleConstants.TAG_JAVA_AGENT_SUBTRACE, resultQuantity = Action.Quantity.MULTIPLE)
+	@Action(resultTag = RuleConstants.TAG_JAVA_AGENT_SUBTRACES, resultQuantity =
+			Action.Quantity.SINGLE)
 	public List<SubTrace> action() {
 
 		List<SubTrace> javaAgentSubTraces = new LinkedList<SubTrace>();
