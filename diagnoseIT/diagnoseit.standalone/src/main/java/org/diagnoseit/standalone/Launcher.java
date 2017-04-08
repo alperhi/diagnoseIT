@@ -104,7 +104,7 @@ public class Launcher {
 	public static void startLauncher(Trace trace, RulePackage rulePackage) {
 
 		String output = "\n######################################################################\n" + "######################################################################\n"
-				+ "########## diagnoseIT starts (TraceID: " + trace.getIdentifier().orElse(0) + ") ##########\n" + "######################################################################\n"
+				+ "########### diagnoseIT starts (TraceID: " + trace.getIdentifier().orElse(0) + ") ###########\n" + "######################################################################\n"
 				+ "######################################################################";
 
 		log.info(output);

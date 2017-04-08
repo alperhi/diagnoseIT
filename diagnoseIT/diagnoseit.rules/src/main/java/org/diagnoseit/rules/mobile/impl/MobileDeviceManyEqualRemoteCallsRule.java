@@ -57,13 +57,15 @@ public class MobileDeviceManyEqualRemoteCallsRule {
 		HashMap<String, Long> remoteInvoMap = new HashMap<String, Long>();
 
 		for (RemoteInvocation remoteInvo : remoteInvocations) {
-			String remoteTarget = remoteInvo.getTarget();
+			if (remoteInvo.getTargetSubTrace().isPresent()) {
+				String remoteTarget = remoteInvo.getTarget();
 
-			if (remoteInvoMap.containsKey(remoteTarget)) {
-				remoteInvoMap.put(remoteTarget, remoteInvoMap.get(remoteTarget) + 1);
-			} else {
-				long amount = 1;
-				remoteInvoMap.put(remoteTarget, amount);
+				if (remoteInvoMap.containsKey(remoteTarget)) {
+					remoteInvoMap.put(remoteTarget, remoteInvoMap.get(remoteTarget) + 1);
+				} else {
+					long amount = 1;
+					remoteInvoMap.put(remoteTarget, amount);
+				}
 			}
 		}
 
