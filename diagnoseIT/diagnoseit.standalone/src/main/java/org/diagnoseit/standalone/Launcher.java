@@ -71,7 +71,7 @@ public class Launcher {
 		return false;
 	}
 
-	private static void loadConfigFile(){
+	private static void loadConfigFile() {
 		boolean configFound = false;
 
 		configFound = loadConfigFile("C:/diagnoseIT/AntiPattern.properties");

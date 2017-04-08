@@ -32,11 +32,9 @@ public class DiagnoseITTimeseries implements Runnable {
 	private final int capacity = 100;
 
 	// influx
-	private final BlockingQueue<DiagnosisInput> queue = new LinkedBlockingQueue<>(
-			capacity);
+	private final BlockingQueue<DiagnosisInput> queue = new LinkedBlockingQueue<>(capacity);
 
-	private final ExecutorService executor = Executors
-			.newSingleThreadExecutor();
+	private final ExecutorService executor = Executors.newSingleThreadExecutor();
 
 	private final List<String> rulesPackages;
 
@@ -50,26 +48,25 @@ public class DiagnoseITTimeseries implements Runnable {
 	public boolean diagnose(InfluxDBConnector connector) {
 		try {
 			// influx
-			return queue.offer(new DiagnosisInput(connector), TIMEOUT,
-					TimeUnit.MILLISECONDS);
+			return queue.offer(new DiagnosisInput(connector), TIMEOUT, TimeUnit.MILLISECONDS);
 		} catch (InterruptedException e) {
 			return false;
 		}
 	}
 
-	//	public int diagnose(Collection<Pair<Trace, Long>> traceBaselinePairs) {
-	//		int count = 0;
-	//		for (Pair<Trace, Long> invocationBaselinePair : traceBaselinePairs) {
-	//			boolean successfullySubmitted = diagnose(
-	//					invocationBaselinePair.getLeft(),
-	//					invocationBaselinePair.getRight());
-	//			if (!successfullySubmitted) {
-	//				break;
-	//			}
-	//			count++;
-	//		}
-	//		return count;
-	//	}
+	// public int diagnose(Collection<Pair<Trace, Long>> traceBaselinePairs) {
+	// int count = 0;
+	// for (Pair<Trace, Long> invocationBaselinePair : traceBaselinePairs) {
+	// boolean successfullySubmitted = diagnose(
+	// invocationBaselinePair.getLeft(),
+	// invocationBaselinePair.getRight());
+	// if (!successfullySubmitted) {
+	// break;
+	// }
+	// count++;
+	// }
+	// return count;
+	// }
 
 	/**
 	 * {@inheritDoc}
@@ -86,17 +83,14 @@ public class DiagnoseITTimeseries implements Runnable {
 		}
 	}
 
-	public void init(ISessionCallback<List<ProblemOccurrence>> resultHandler)
-			throws ClassNotFoundException {
+	public void init(ISessionCallback<List<ProblemOccurrence>> resultHandler) throws ClassNotFoundException {
 
-		ClassPathScanningCandidateComponentProvider scanner = new ClassPathScanningCandidateComponentProvider(
-				false);
+		ClassPathScanningCandidateComponentProvider scanner = new ClassPathScanningCandidateComponentProvider(false);
 
 		scanner.addIncludeFilter(new AnnotationTypeFilter(Rule.class));
 		Set<Class<?>> ruleClasses = new HashSet<>();
 		for (String packageName : rulesPackages) {
-			for (BeanDefinition bd : scanner
-					.findCandidateComponents(packageName)) {
+			for (BeanDefinition bd : scanner.findCandidateComponents(packageName)) {
 				Class<?> clazz = Class.forName(bd.getBeanClassName());
 				ruleClasses.add(clazz);
 			}
@@ -126,6 +120,7 @@ public class DiagnoseITTimeseries implements Runnable {
 		public DiagnosisInput(InfluxDBConnector connector) {
 			this.connector = connector;
 		}
+
 		/**
 		 *
 		 * @return

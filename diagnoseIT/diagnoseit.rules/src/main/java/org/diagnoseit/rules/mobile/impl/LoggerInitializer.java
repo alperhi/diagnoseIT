@@ -17,7 +17,7 @@ public class LoggerInitializer {
 	public static Logger getLogger(String name) {
 
 		if (logger == null) {
-			logger = Logger.getLogger("Init");
+			logger = Logger.getLogger("diagnoseIT");
 			initLogger(logger);
 		}
 		return logger;

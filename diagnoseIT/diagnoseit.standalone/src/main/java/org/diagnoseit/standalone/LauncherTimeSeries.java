@@ -24,11 +24,9 @@ public class LauncherTimeSeries {
 		timeThread.start();
 	}
 
-	private static class ResultHandler implements
-	ISessionCallback<List<ProblemOccurrence>> {
+	private static class ResultHandler implements ISessionCallback<List<ProblemOccurrence>> {
 		/** The logger of this class. */
-		private static final Logger log = LoggerFactory
-				.getLogger(Launcher.class);
+		private static final Logger log = LoggerFactory.getLogger(Launcher.class);
 
 		/**
 		 * {@inheritDoc}
@@ -59,8 +57,7 @@ public class LauncherTimeSeries {
 
 			while (true) {
 
-				DiagnoseITTimeseries diagnoseIT = new DiagnoseITTimeseries(
-						Collections.singletonList(RULES_PACKAGE));
+				DiagnoseITTimeseries diagnoseIT = new DiagnoseITTimeseries(Collections.singletonList(RULES_PACKAGE));
 				try {
 					diagnoseIT.init(new ResultHandler());
 					diagnoseIT.diagnose(new InfluxDBConnector());

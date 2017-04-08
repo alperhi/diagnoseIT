@@ -4,8 +4,8 @@ import static org.diagnoseit.engine.rule.annotation.TagValue.InjectionStrategy.B
 
 import java.lang.reflect.Field;
 
-import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.diagnoseit.engine.rule.annotation.TagValue.InjectionStrategy;
 import org.diagnoseit.engine.rule.exception.RuleExecutionException;
 import org.diagnoseit.engine.tag.Tag;
@@ -73,7 +73,7 @@ public class TagInjection extends FieldInjection {
 			}
 		}
 		throw new RuleExecutionException("Unable to find Tag: " + getType()
-				+ " in RuleInput.", context);
+		+ " in RuleInput.", context);
 	}
 
 	// -------------------------------------------------------------
@@ -117,7 +117,7 @@ public class TagInjection extends FieldInjection {
 			return true;
 		}
 
-		if (o == null || getClass() != o.getClass()) {
+		if ((o == null) || (getClass() != o.getClass())) {
 			return false;
 		}
 

@@ -14,12 +14,12 @@ import org.spec.research.open.xtrace.api.core.callables.MobileMetadataMeasuremen
 /**
  * @author AlperHi
  */
-@Rule(name = "HardDiscNoStorageRule")
+@Rule(name = "HardDiscRule")
 public class HardDiscRule {
 
 	private final double STORAGE_THRESHOLD = AntiPatternConfig.getInstance().getPropertyDouble("HARD_DISC_RULE_STORAGE_THRESHOLD");
 
-	private static final Logger log = LoggerInitializer.getLogger(RAMRampRule.class.getName());
+	private static final Logger log = LoggerInitializer.getLogger(HardDiscRule.class.getName());
 
 	@TagValue(type = Tags.ROOT_TAG)
 	private Trace trace;

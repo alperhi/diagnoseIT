@@ -4,7 +4,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 import java.lang.reflect.Method;
 
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang.StringUtils;
 import org.diagnoseit.engine.rule.annotation.Condition;
 import org.diagnoseit.engine.rule.exception.RuleExecutionException;
 import org.springframework.util.ReflectionUtils;
@@ -134,9 +134,9 @@ public class ConditionMethod {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((hint == null) ? 0 : hint.hashCode());
-		result = prime * result + ((method == null) ? 0 : method.hashCode());
-		result = prime * result + ((name == null) ? 0 : name.hashCode());
+		result = (prime * result) + ((hint == null) ? 0 : hint.hashCode());
+		result = (prime * result) + ((method == null) ? 0 : method.hashCode());
+		result = (prime * result) + ((name == null) ? 0 : name.hashCode());
 		return result;
 	}
 

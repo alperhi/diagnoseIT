@@ -27,15 +27,12 @@ import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.ClassPathScanningCandidateComponentProvider;
 import org.springframework.core.type.filter.AnnotationTypeFilter;
 
-
-
-public class DiagnoseIT implements Runnable{
+public class DiagnoseIT implements Runnable {
 	private static final long TIMEOUT = 50;
 
 	/** The logger of this class. */
 	private static final Logger log = LoggerFactory.getLogger(DiagnoseIT.class);
-	
-	
+
 	private final int capacity = 100;
 
 	// influx
@@ -44,15 +41,14 @@ public class DiagnoseIT implements Runnable{
 	private final ExecutorService executor = Executors.newSingleThreadExecutor();
 
 	private final List<String> rulesPackages;
-	
+
 	private IDiagnosisEngine<Trace> engine;
-	
+
 	public DiagnoseIT(List<String> rulesPackages) {
 		this.rulesPackages = rulesPackages;
 	}
 
-
-	// influx 
+	// influx
 	public boolean diagnose(Trace trace, long baseline) {
 		try {
 			// influx
@@ -149,6 +145,5 @@ public class DiagnoseIT implements Runnable{
 			return baseline;
 		}
 	}
-	
 
 }
