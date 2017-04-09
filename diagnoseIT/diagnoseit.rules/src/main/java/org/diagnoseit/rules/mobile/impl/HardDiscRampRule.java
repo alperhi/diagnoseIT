@@ -14,7 +14,7 @@ import org.spec.research.open.xtrace.api.core.callables.Callable;
 import org.spec.research.open.xtrace.api.core.callables.MobileMetadataMeasurement;
 
 /**
- * Rule for detecting the Ramp anti-pattern in use case (hard disc usage)
+ * Rule for detecting the Ramp anti-pattern in an use case (hard disc usage)
  *
  * @author Alper Hidiroglu
  *
@@ -74,7 +74,7 @@ public class HardDiscRampRule {
 			return false;
 		}
 
-		log.info("High increase of hard disc usage detected within use case. Slope of the regression line = " + regression.getSlope());
+		log.info("High increase of hard disc usage detected within use case. The slope of the regression line is = " + regression.getSlope() + ".\n");
 		return true;
 	}
 

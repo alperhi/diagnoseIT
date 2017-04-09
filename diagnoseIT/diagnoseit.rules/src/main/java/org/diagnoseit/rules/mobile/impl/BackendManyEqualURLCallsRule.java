@@ -3,6 +3,7 @@ package org.diagnoseit.rules.mobile.impl;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
 
 import org.diagnoseit.engine.rule.annotation.Action;
@@ -98,9 +99,12 @@ public class BackendManyEqualURLCallsRule {
 
 		boolean tooManyEqualURLCalls = false;
 
-		for (long amountEqualURLCalls : remoteInvoMap.values()) {
+		for (Map.Entry<String, Long> entry : remoteInvoMap.entrySet()) {
+			String key = entry.getKey();
+			Long amountEqualURLCalls = entry.getValue();
 			if ((amountEqualURLCalls >= MIN_AMOUNT_OF_CALLS) && (amountEqualURLCalls > (remoteSubtraces.size() * URL_CALLS_PERCENT))) {
-				log.info("Java application executed too many equal URL calls. Amount = " + amountEqualURLCalls + ".");
+				log.info("Java application executed too many equal calls to the URL " + key + ". The amount of the calls is " + amountEqualURLCalls + ". Total time of the Java agent traces is: "
+						+ completeDurationOfSubtraces + " s./n");
 				tooManyEqualURLCalls = true;
 			}
 		}

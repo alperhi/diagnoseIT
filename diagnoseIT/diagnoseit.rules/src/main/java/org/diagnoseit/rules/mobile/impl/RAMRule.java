@@ -12,6 +12,8 @@ import org.spec.research.open.xtrace.api.core.callables.Callable;
 import org.spec.research.open.xtrace.api.core.callables.MobileMetadataMeasurement;
 
 /**
+ * Rule analyzes if RAM is highly utilized.
+ *
  * @author AlperHi
  */
 @Rule(name = "RAMRule")
@@ -47,7 +49,7 @@ public class RAMRule {
 			}
 		}
 		if (maxUsage >= STORAGE_THRESHOLD) {
-			log.info("High usage of RAM detected. This could have an impact on the performance. The peek usage of the RAM was: " + maxUsage);
+			log.info("High utilization of RAM detected. This could have an impact on the performance. The peek utilization of the RAM was: " + maxUsage + ".\n");
 			return true;
 		}
 		return false;

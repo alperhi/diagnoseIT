@@ -13,7 +13,9 @@ import org.spec.research.open.xtrace.api.core.callables.Callable;
 import org.spec.research.open.xtrace.api.core.callables.RemoteInvocation;
 
 /**
- * @author AlperHi
+ * Rule analyzes if the backend executed too many remote calls.
+ *
+ * @author Alper Hi
  *
  */
 @Rule(name = "BackendManyRemoteCallsRule")
@@ -51,7 +53,8 @@ public class BackendManyRemoteCallsRule {
 		completeDurationOfSubtraces /= 1000000000l;
 
 		if ((remoteInvocations.size() >= MIN_AMOUNT_OF_CALLS) && (remoteInvocations.size() >= (completeDurationOfSubtraces * NUMBER_OF_REMOTE_CALLS_IN_A_SECOND))) {
-			log.info("Backend executed too many remote calls. Amount = " + remoteInvocations.size() + ".");
+			log.info("Java application executed too many remote calls. The amount of the calls is " + remoteInvocations.size() + ". Total time of the Java agent traces is: "
+					+ completeDurationOfSubtraces + " s./n");
 			return true;
 		}
 		return false;

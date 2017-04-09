@@ -2,6 +2,7 @@ package org.diagnoseit.rules.mobile.impl;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
 
 import org.diagnoseit.engine.rule.annotation.Action;
@@ -73,9 +74,11 @@ public class MobileDeviceManyEqualURLCallsRule {
 
 		boolean tooManyEqualURLCalls = false;
 
-		for (long amountEqualURLCalls : remoteInvoMap.values()) {
+		for (Map.Entry<String, Long> entry : remoteInvoMap.entrySet()) {
+			String key = entry.getKey();
+			Long amountEqualURLCalls = entry.getValue();
 			if ((amountEqualURLCalls >= MIN_AMOUNT_OF_CALLS) && (amountEqualURLCalls > (remoteInvocations.size() * REMOTE_CALLS_PERCENT))) {
-				log.info("Mobile application executed too many equal URL calls. Amount = " + amountEqualURLCalls + ".");
+				log.info("Mobile application executed too many equal calls to the URL " + key + ". The amount of calls is " + amountEqualURLCalls + " within " + useCaseDuration + " s.\n");
 				// return true;
 				tooManyEqualURLCalls = true;
 			}

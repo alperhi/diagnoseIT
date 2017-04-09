@@ -12,6 +12,8 @@ import org.spec.research.open.xtrace.api.core.callables.Callable;
 import org.spec.research.open.xtrace.api.core.callables.MobileMetadataMeasurement;
 
 /**
+ * Rule analyzes if hard disc is highly utilized.
+ *
  * @author AlperHi
  */
 @Rule(name = "HardDiscRule")
@@ -47,7 +49,7 @@ public class HardDiscRule {
 			}
 		}
 		if (maxUsage >= STORAGE_THRESHOLD) {
-			log.info("High usage of hard disc detected. This could have an impact on the performance. The peek usage was: " + maxUsage);
+			log.info("High utilization of hard disc detected. This could have an impact on the performance. The peek utilization was: " + maxUsage + ".\n");
 			return true;
 		}
 		return false;

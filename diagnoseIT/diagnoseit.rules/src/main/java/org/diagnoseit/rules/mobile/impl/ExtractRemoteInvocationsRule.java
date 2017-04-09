@@ -12,9 +12,9 @@ import org.spec.research.open.xtrace.api.core.Trace;
 import org.spec.research.open.xtrace.api.core.callables.Callable;
 import org.spec.research.open.xtrace.api.core.callables.RemoteInvocation;
 
-/***
- * Rule extracts remote invocations from mobile trace and returns all.
- * 
+/**
+ * Rule extracts remote invocations from mobile trace and returns all of them.
+ *
  * @author Alper Hi
  *
  */
@@ -25,7 +25,8 @@ public class ExtractRemoteInvocationsRule {
 	private Trace trace;
 
 	/**
-	 * Execution of the rule. Possibly returns more than one remote invocation.
+	 * Execution of the rule. Returns all remote invocations in a list.
+	 * 
 	 * @return
 	 */
 	@Action(resultTag = RuleConstants.TAG_REMOTE_INVOCATIONS, resultQuantity =

@@ -2,6 +2,7 @@ package org.diagnoseit.rules.mobile.impl;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
 
 import org.diagnoseit.engine.rule.annotation.Action;
@@ -71,9 +72,13 @@ public class MobileDeviceManyEqualRemoteCallsRule {
 
 		boolean tooManyEqualRemoteCalls = false;
 
-		for (long amountEqualRemoteInvos : remoteInvoMap.values()) {
+		for (Map.Entry<String, Long> entry : remoteInvoMap.entrySet()) {
+			String key = entry.getKey();
+			Long amountEqualRemoteInvos = entry.getValue();
 			if ((amountEqualRemoteInvos >= MIN_AMOUNT_OF_CALLS) && (amountEqualRemoteInvos > (remoteInvocations.size() * REMOTE_CALLS_PERCENT))) {
-				log.info("Mobile application executed too many equal remote calls. Amount = " + amountEqualRemoteInvos + ".");
+				log.info("Mobile application executed too many equal remote calls. The amount of calls is " + amountEqualRemoteInvos + " within " + useCaseDuration
+						+ " s. Target information of the calls: "
+						+ key + ".\n");
 				// return true;
 				tooManyEqualRemoteCalls = true;
 			}

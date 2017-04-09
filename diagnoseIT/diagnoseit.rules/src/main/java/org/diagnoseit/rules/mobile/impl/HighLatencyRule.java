@@ -55,17 +55,18 @@ public class HighLatencyRule {
 		long timestampOfRequest = requestMeasurement.getTimestamp().get();
 		long timestampOfResponse = responseMeasurement.getTimestamp().get();
 
+		// In milliseconds
 		long durationOfRemoteCallOnMobileDevice = timestampOfResponse - timestampOfRequest;
 
-		long durationOfRemoteCallOnServer = remoteInvocation.getTargetSubTrace().get().getResponseTime();
+		long durationOfRemoteCallOnServer = remoteInvocation.getTargetSubTrace().get().getResponseTime() / 1000000;
 
 		long latency = durationOfRemoteCallOnMobileDevice - durationOfRemoteCallOnServer;
 
 		if (latency > LATENCY_THRESHOLD) {
-			if (remoteInvocation.getIdentifier().isPresent()) {
-				log.info("High Latency (= " + latency + ") in remote invocation detected. The identifier of the remote invocation is: " + remoteInvocation.getIdentifier().get());
+			if (remoteInvocation.getTargetSubTrace().isPresent()) {
+				log.info("High Latency (= " + latency + "ms) during remote call detected. Target information of the remote call: " + remoteInvocation.getIdentifier().get() + ".\n");
 			} else {
-				log.info("High Latency (= " + latency + ") in remote invocation detected. The identifier of the remote invocation is unknown.");
+				log.info("High Latency (= " + latency + "ms) during remote call detected.\n");
 			}
 			return true;
 		}

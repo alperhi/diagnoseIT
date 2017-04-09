@@ -48,7 +48,7 @@ public class MobileDeviceManyRemoteCallsRule {
 		double useCaseDuration = rootCallable.getResponseTime() / 1000000000.0;
 
 		if ((remoteInvocations.size() >= MIN_AMOUNT_OF_CALLS) && (remoteInvocations.size() >= (useCaseDuration * NUMBER_OF_REMOTE_CALLS_IN_A_SECOND))) {
-			log.info("Mobile application executed too many remote calls. Amount = " + remoteInvocations.size() + ".");
+			log.info("Mobile application executed too many remote calls. The amount of calls is " + remoteInvocations.size() + " within " + useCaseDuration + " s.\n");
 			return true;
 		}
 		return false;

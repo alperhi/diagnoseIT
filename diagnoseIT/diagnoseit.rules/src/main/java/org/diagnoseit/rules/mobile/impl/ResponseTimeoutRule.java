@@ -13,8 +13,8 @@ import org.spec.research.open.xtrace.api.core.callables.Callable;
 import org.spec.research.open.xtrace.api.core.callables.RemoteInvocation;
 
 /**
- * Rule checks whether on the client side there was a timeout. It checks further
- * if the response would have been received.
+ * Rule checks whether on the client side there was a timeout. It checks further if the response
+ * would have been received.
  *
  * @author Alper Hi
  *
@@ -29,6 +29,7 @@ public class ResponseTimeoutRule {
 
 	/**
 	 * Rule execution.
+	 *
 	 * @return
 	 */
 	@Action(resultTag = RuleConstants.TAG_RESPONSE_TIMEOUT)
@@ -40,16 +41,12 @@ public class ResponseTimeoutRule {
 			}
 			RemoteInvocation remoteInvo = (RemoteInvocation) callable;
 			if (remoteInvo.getRequestMeasurement().isPresent()) {
-				MobileRemoteMeasurement mobileRemoteMeasurement = remoteInvo
-						.getRequestMeasurement().get();
+				MobileRemoteMeasurement mobileRemoteMeasurement = remoteInvo.getRequestMeasurement().get();
 				if (mobileRemoteMeasurement.getTimeout().isPresent()) {
-					boolean isTimeout = mobileRemoteMeasurement.getTimeout()
-							.get();
+					boolean isTimeout = mobileRemoteMeasurement.getTimeout().get();
 					if (isTimeout && remoteInvo.getTargetSubTrace().isPresent()) {
-						log.info("Timeout on mobile client and the response came too late.");
+						log.info("Timeout on mobile client. The response would have been received. Target information of the remote call: " + remoteInvo.getTarget() + ".\n");
 						return true;
-					} else if (isTimeout) {
-						log.info("Timeout on mobile client and no response.");
 					}
 				}
 			}

@@ -45,6 +45,11 @@ public class Launcher {
 
 	};
 
+	/**
+	 *
+	 * @param args
+	 * @throws ClassNotFoundException
+	 */
 	public static void main(String[] args) throws ClassNotFoundException {
 
 		Trace trace = TraceCreator.getTestTrace(true, 100, 3);
@@ -52,6 +57,11 @@ public class Launcher {
 
 	}
 
+	/**
+	 *
+	 * @param filename
+	 * @return
+	 */
 	private static boolean loadConfigFile(String filename) {
 
 		if (!new File(filename).exists()) {
@@ -71,6 +81,9 @@ public class Launcher {
 		return false;
 	}
 
+	/**
+	 *
+	 */
 	private static void loadConfigFile() {
 		boolean configFound = false;
 
@@ -104,7 +117,7 @@ public class Launcher {
 	public static void startLauncher(Trace trace, RulePackage rulePackage) {
 
 		String output = "\n######################################################################\n" + "######################################################################\n"
-				+ "########### diagnoseIT starts (TraceID: " + trace.getIdentifier().orElse(0) + ") ###########\n" + "######################################################################\n"
+				+ "########### diagnoseIT starts (TraceID: " + trace.getIdentifier().orElse(0) + ") ##########\n" + "######################################################################\n"
 				+ "######################################################################";
 
 		log.info(output);
@@ -125,6 +138,11 @@ public class Launcher {
 		}
 	}
 
+	/**
+	 *
+	 * @author AlperHi
+	 *
+	 */
 	private static class ResultHandler implements ISessionCallback<List<ProblemOccurrence>> {
 		/** The logger of this class. */
 		private static final Logger log = LoggerInitializer.getLogger(Launcher.class.getName());

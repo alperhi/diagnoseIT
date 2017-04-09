@@ -48,11 +48,10 @@ public class FailedBackendCommunicationRule {
 
 		if (networkConnection.equalsIgnoreCase(NO_CONNECTION)) {
 
-			if (remoteInvocation.getIdentifier().isPresent()) {
-				log.info("Due to missing network connection the communication with the backend failed. The identifier of the remote invocation is: "
-						+ remoteInvocation.getIdentifier().get());
+			if (remoteInvocation.getTargetSubTrace().isPresent()) {
+				log.info("Due to missing network connection a remote call failed. Target information of the remote call: " + remoteInvocation.getTarget() + ".\n");
 			} else {
-				log.info("Due to missing network connection the communication with the backend failed. The identifier of the remote invocation is unknown");
+				log.info("Due to missing network connection a remote call failed.\n");
 			}
 			return true;
 		}

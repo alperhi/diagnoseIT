@@ -74,7 +74,7 @@ public class RAMRampRule {
 			return false;
 		}
 
-		log.info("High increase of RAM usage detected within use case. Slope of the regression line = " + regression.getSlope());
+		log.info("High increase of RAM usage detected within use case. Slope of the regression line = " + regression.getSlope() + ".\n");
 		return true;
 	}
 
