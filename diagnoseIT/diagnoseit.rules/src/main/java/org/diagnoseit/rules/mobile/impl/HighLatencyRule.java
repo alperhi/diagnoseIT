@@ -64,7 +64,7 @@ public class HighLatencyRule {
 
 		if (latency > LATENCY_THRESHOLD) {
 			if (remoteInvocation.getTargetSubTrace().isPresent()) {
-				log.info("High Latency (= " + latency + "ms) during remote call detected. Target information of the remote call: " + remoteInvocation.getIdentifier().get() + ".\n");
+				log.info("High Latency (= " + latency + "ms) during remote call detected. Target information of the remote call: " + remoteInvocation.getTarget() + ".\n");
 			} else {
 				log.info("High Latency (= " + latency + "ms) during remote call detected.\n");
 			}
