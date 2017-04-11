@@ -15,16 +15,16 @@ import org.spec.research.open.xtrace.api.core.callables.NestingCallable;
 import org.spec.research.open.xtrace.api.core.callables.RemoteInvocation;
 
 /**
- * Rule analyzes if the mobile device executed to many remote calls to the same backend that becomes
- * a bottleneck.
+ * Rule analyzes if the mobile application executed to many remote calls to the same backend that
+ * becomes a bottleneck.
  *
  * @author Alper Hi
  *
  */
 @Rule(name = "MobileDeviceManyRemoteCallsToSameTargetRule")
-public class MobileDeviceManyRemoteCallsToSameTargetRule {
+public class MobileAppManyRemoteCallsToSameTargetRule {
 
-	private static final Logger log = LoggerInitializer.getLogger(MobileDeviceManyRemoteCallsToSameTargetRule.class.getName());
+	private static final Logger log = LoggerInitializer.getLogger(MobileAppManyRemoteCallsToSameTargetRule.class.getName());
 
 	private static final double DURATION_PERCENT = AntiPatternConfig.getInstance().getPropertyDouble("MOBILE_DEVICE_MANY_EQUAL_REMOTE_CALLS_RULE_DURATION_PERCENT");
 

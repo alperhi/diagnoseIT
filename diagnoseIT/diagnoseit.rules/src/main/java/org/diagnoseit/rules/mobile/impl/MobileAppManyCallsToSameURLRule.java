@@ -15,15 +15,15 @@ import org.spec.research.open.xtrace.api.core.callables.NestingCallable;
 import org.spec.research.open.xtrace.api.core.callables.RemoteInvocation;
 
 /**
- * Rule analyzes if the mobile device executed to many equal URL calls.
+ * Rule analyzes if the mobile application executed to many equal URL calls.
  *
  * @author Alper Hi
  *
  */
-@Rule(name = "MobileDeviceManyCallsToSameURLRule")
-public class MobileDeviceManyCallsToSameURLRule {
+@Rule(name = "MobileAppManyCallsToSameURLRule")
+public class MobileAppManyCallsToSameURLRule {
 
-	private static final Logger log = LoggerInitializer.getLogger(MobileDeviceManyCallsToSameURLRule.class.getName());
+	private static final Logger log = LoggerInitializer.getLogger(MobileAppManyCallsToSameURLRule.class.getName());
 
 	private static final double DURATION_PERCENT = AntiPatternConfig.getInstance().getPropertyDouble("MOBILE_DEVICE_MANY_EQUAL_URL_CALLS_RULE_DURATION_PERCENT");
 
