@@ -116,8 +116,17 @@ public class Launcher {
 	 */
 	public static void startLauncher(Trace trace, RulePackage rulePackage) {
 
+		String hexaId = null;
+
+		if (trace.getIdentifier().isPresent()) {
+			long traceId = (long) trace.getIdentifier().get();
+			hexaId = Long.toHexString(traceId);
+		} else {
+			hexaId = "0";
+		}
+
 		String output = "\n######################################################################\n" + "######################################################################\n"
-				+ "########### diagnoseIT starts (TraceID: " + trace.getIdentifier().orElse(0) + ") ##########\n" + "######################################################################\n"
+				+ "########### diagnoseIT starts (TraceID: " + hexaId + ") ##########\n" + "######################################################################\n"
 				+ "######################################################################";
 
 		log.info(output);

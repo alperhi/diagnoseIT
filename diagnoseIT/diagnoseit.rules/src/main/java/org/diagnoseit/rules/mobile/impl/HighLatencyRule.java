@@ -10,7 +10,7 @@ import org.spec.research.open.xtrace.api.core.MobileRemoteMeasurement;
 import org.spec.research.open.xtrace.api.core.callables.RemoteInvocation;
 
 /**
- * Rule detects high latency, although there is a good network connection.
+ * Rule detects high latency.
  *
  * @author Alper Hi
  *

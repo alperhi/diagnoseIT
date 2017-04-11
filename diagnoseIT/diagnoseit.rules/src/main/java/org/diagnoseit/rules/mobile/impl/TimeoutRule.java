@@ -19,10 +19,10 @@ import org.spec.research.open.xtrace.api.core.callables.RemoteInvocation;
  * @author Alper Hi
  *
  */
-@Rule(name = "ResponseTimeoutRule")
-public class ResponseTimeoutRule {
+@Rule(name = "TimeoutRule")
+public class TimeoutRule {
 
-	private static final Logger log = LoggerInitializer.getLogger(ResponseTimeoutRule.class.getName());
+	private static final Logger log = LoggerInitializer.getLogger(TimeoutRule.class.getName());
 
 	@TagValue(type = Tags.ROOT_TAG)
 	private Trace trace;
