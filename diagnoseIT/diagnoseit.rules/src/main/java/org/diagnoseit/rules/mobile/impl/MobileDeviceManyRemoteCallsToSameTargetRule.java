@@ -21,10 +21,10 @@ import org.spec.research.open.xtrace.api.core.callables.RemoteInvocation;
  * @author Alper Hi
  *
  */
-@Rule(name = "MobileDeviceManyEqualRemoteCallsRule")
-public class MobileDeviceManyEqualRemoteCallsRule {
+@Rule(name = "MobileDeviceManyRemoteCallsToSameTargetRule")
+public class MobileDeviceManyRemoteCallsToSameTargetRule {
 
-	private static final Logger log = LoggerInitializer.getLogger(MobileDeviceManyEqualRemoteCallsRule.class.getName());
+	private static final Logger log = LoggerInitializer.getLogger(MobileDeviceManyRemoteCallsToSameTargetRule.class.getName());
 
 	private static final double DURATION_PERCENT = AntiPatternConfig.getInstance().getPropertyDouble("MOBILE_DEVICE_MANY_EQUAL_REMOTE_CALLS_RULE_DURATION_PERCENT");
 
@@ -76,7 +76,7 @@ public class MobileDeviceManyEqualRemoteCallsRule {
 			String key = entry.getKey();
 			Long amountEqualRemoteInvos = entry.getValue();
 			if ((amountEqualRemoteInvos >= MIN_AMOUNT_OF_CALLS) && (amountEqualRemoteInvos > (remoteInvocations.size() * REMOTE_CALLS_PERCENT))) {
-				log.info("Mobile application executed too many equal remote calls. The amount of calls is " + amountEqualRemoteInvos + " within " + useCaseDuration
+				log.info("Mobile application executed too many remote calls to the same target. The amount of calls is " + amountEqualRemoteInvos + " within " + useCaseDuration
 						+ " s. Target information of the calls: "
 						+ key + ".\n");
 				// return true;

@@ -21,10 +21,10 @@ import org.spec.research.open.xtrace.api.core.callables.RemoteInvocation;
  * @author Alper Hi
  *
  */
-@Rule(name = "BackendManyEqualURLCallsRule")
-public class BackendManyEqualURLCallsRule {
+@Rule(name = "BackendManyCallsToSameURLRule")
+public class BackendManyCallsToSameURLRule {
 
-	private static final Logger log = LoggerInitializer.getLogger(BackendManyEqualURLCallsRule.class.getName());
+	private static final Logger log = LoggerInitializer.getLogger(BackendManyCallsToSameURLRule.class.getName());
 
 	private static final double URL_CALLS_PERCENT = AntiPatternConfig.getInstance().getPropertyDouble("BACKEND_MANY_EQUAL_URL_CALLS_RULE_URL_CALLS_PERCENT");
 
@@ -42,7 +42,6 @@ public class BackendManyEqualURLCallsRule {
 	 */
 	@Action(resultTag = RuleConstants.TAG_MANY_EQUAL_URL_CALLS_BACKEND)
 	public boolean action() {
-
 
 		if (javaAgentSubTraces.isEmpty()) {
 			return false;
@@ -103,7 +102,7 @@ public class BackendManyEqualURLCallsRule {
 			String key = entry.getKey();
 			Long amountEqualURLCalls = entry.getValue();
 			if ((amountEqualURLCalls >= MIN_AMOUNT_OF_CALLS) && (amountEqualURLCalls > (remoteSubtraces.size() * URL_CALLS_PERCENT))) {
-				log.info("Java application executed too many equal calls to the URL " + key + ". The amount of the calls is " + amountEqualURLCalls + ". Total time of the Java agent traces is: "
+				log.info("Java application executed too many calls to the same URL " + key + ". The amount of the calls is " + amountEqualURLCalls + ". Total time of the Java agent traces is: "
 						+ completeDurationOfSubtraces + " s./n");
 				tooManyEqualURLCalls = true;
 			}

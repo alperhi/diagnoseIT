@@ -161,7 +161,7 @@ public class Launcher {
 		 */
 		@Override
 		public void onFailure(Throwable t) {
-			log.info("Failed conducting diagnosis! Message: " + t.getMessage());
+			log.info("Failed conducting diagnosis! Message: " + t.getCause());
 		}
 	}
 

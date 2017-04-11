@@ -62,9 +62,9 @@ public class RAMRampRule {
 
 		// decrease the range of timestamps, begin by zero
 		for (MobileMetadataMeasurement measurement : mobileCallables) {
+
 			double RAMUsage = measurement.getMemoryUsage().get() * 100;
 			long timestamp = measurement.getTimestamp() - firstTimestamp;
-
 			regression.addData(timestamp, RAMUsage);
 		}
 

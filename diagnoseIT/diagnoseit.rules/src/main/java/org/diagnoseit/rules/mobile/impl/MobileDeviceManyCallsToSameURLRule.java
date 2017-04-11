@@ -20,10 +20,10 @@ import org.spec.research.open.xtrace.api.core.callables.RemoteInvocation;
  * @author Alper Hi
  *
  */
-@Rule(name = "MobileDeviceManyEqualURLCallsRule")
-public class MobileDeviceManyEqualURLCallsRule {
+@Rule(name = "MobileDeviceManyCallsToSameURLRule")
+public class MobileDeviceManyCallsToSameURLRule {
 
-	private static final Logger log = LoggerInitializer.getLogger(MobileDeviceManyEqualURLCallsRule.class.getName());
+	private static final Logger log = LoggerInitializer.getLogger(MobileDeviceManyCallsToSameURLRule.class.getName());
 
 	private static final double DURATION_PERCENT = AntiPatternConfig.getInstance().getPropertyDouble("MOBILE_DEVICE_MANY_EQUAL_URL_CALLS_RULE_DURATION_PERCENT");
 
@@ -78,7 +78,7 @@ public class MobileDeviceManyEqualURLCallsRule {
 			String key = entry.getKey();
 			Long amountEqualURLCalls = entry.getValue();
 			if ((amountEqualURLCalls >= MIN_AMOUNT_OF_CALLS) && (amountEqualURLCalls > (remoteInvocations.size() * REMOTE_CALLS_PERCENT))) {
-				log.info("Mobile application executed too many equal calls to the URL " + key + ". The amount of calls is " + amountEqualURLCalls + " within " + useCaseDuration + " s.\n");
+				log.info("Mobile application executed too many calls to the same URL " + key + ". The amount of calls is " + amountEqualURLCalls + " within " + useCaseDuration + " s.\n");
 				// return true;
 				tooManyEqualURLCalls = true;
 			}
